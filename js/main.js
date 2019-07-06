@@ -34,6 +34,7 @@ var generateRandomComment = function () {
 /**
  * Функцию для создания массива из 25 сгенерированных JS объектов.
  *
+ * @param {number} countPhotoUsers - количество пользователей
  * @param {string} url — адрес картинки вида photos/{{i}}.jpg, где {{i}} это число от 1 до 25. Адреса картинок не должны повторяться.
  * @param {number} likes - количество лайков, поставленных фотографии. Случайное число от 15 до 200.
  * @param {array} comments - список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев определяется на своё усмотрение. Все комментарии генерируются случайным образом.
@@ -59,7 +60,7 @@ var pictures = document.querySelector('.pictures');
 
 var photoUsers = getPhotoUsers(25);
 
-photoUsers.forEach(function (photoUser) {
+photoUsers.forEach(function () {
   var photoElement = template.content.cloneNode(true);
 
   photoElement.querySelector('.picture__img').src = photoUsers.url;
