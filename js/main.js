@@ -23,7 +23,7 @@ var generateRandomNumber = function (min, max) {
 };
 
 /**
- * Функция генерации случайного элемента массива
+ * Функция генерации случайного комментария
  *
  * @return {number} - номер случайного элемента массива
  */
@@ -34,51 +34,38 @@ var generateRandomComment = function () {
 /**
  * Функцию для создания массива из 25 сгенерированных JS объектов.
  *
- * @return {object} - описание фотографии, опубликованной пользователем
  * @param {string} url — адрес картинки вида photos/{{i}}.jpg, где {{i}} это число от 1 до 25. Адреса картинок не должны повторяться.
  * @param {number} likes - количество лайков, поставленных фотографии. Случайное число от 15 до 200.
  * @param {array} comments - список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев определяется на своё усмотрение. Все комментарии генерируются случайным образом.
+ * @return {object} - описание фотографии, опубликованной пользователем.
  */
+var getPhotoUsers = function (countPhotoUsers) {
+  var photoUsers = [];
 
-var followers = [];
-
-var generateArrayOfFollowers = function () {
-  for (var i = 1; i <= 25; i++) {
-    followers[i] = {
+  for (var i = 1; i <= countPhotoUsers; i++) {
+    photoUsers[i] = {
       url: 'photos/' + i + '.jpg',
       likes: generateRandomNumber(15, 200),
       comments: generateRandomComment()
     };
   }
-  return followers;
+  return photoUsers;
 };
-
-generateArrayOfFollowers();
 
 // На основе данных, созданных в предыдущем пункте и шаблона #picture создайте DOM-элементы, соответствующие фотографиям и заполните их данными из массива:
 // Адрес изображения url подставьте как src изображения
-
-var template = document.getElementById('picture');
+var template = document.querySelector('#picture');
 var pictures = document.querySelector('.pictures');
 
-followers.forEach(function () {
-  var photoElement = template.cloneNode(true);
-  // function (objectItem);
-  // photoElement.querySelector('.picture__img').src = objectItem.url;
-  // photoElement.querySelector('.picture__comments').textContent = objectItem.comments;
-  // photoElement.querySelector('.picture__likes').textContent = objectItem.likes;
+var photoUsers = getPhotoUsers(25);
+
+photoUsers.forEach(function (photoUser) {
+  var photoElement = template.content.cloneNode(true);
+
+  photoElement.querySelector('.picture__img').src = photoUsers.url;
+  photoElement.querySelector('.picture__comments').textContent = photoUsers.comments;
+  photoElement.querySelector('.picture__likes').textContent = photoUsers.likes;
   pictures.appendChild(photoElement);
 });
 
-// Количество лайков likes подставьте как текстовое содержание элемента .picture__likes
-// var likes = document.querySelector('.picture__likes');
-// if (likes) {
-//   likes.textContent = 25;
-// }
-
-// Количество комментариев comments подставьте как текстовое содержание элемента .picture__comments
-// var comments = document.querySelector('.picture__comments');
-// if (comments) {
-//   comments.textContent = 'Всё отлично!';
-// }
-
+// documentFragment
