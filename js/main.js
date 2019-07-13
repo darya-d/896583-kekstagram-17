@@ -22,14 +22,31 @@ var generateRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + 1) + min;
 };
 
+var getRandomElement = function (elements) {
+  return elements[generateRandomNumber(0, elements.length - 1)];
+}
+
 /**
  * Функция генерации случайного комментария
  *
  * @return {number} - номер случайного элемента массива
  */
-var generateRandomComment = function () {
-  return COMMENTS[Math.floor(Math.random() * COMMENTS.length)];
+
+var createArray = function (length) {
+  return Array.apply(null, { length });
 };
+
+var generateRandomComment = function () {
+  return getRandomElement(COMMENTS);
+};
+
+var generateListOfComments = function () {
+  var countOfComments = generateRandomNumber(1, COMMENTS.length);
+  return createArray(countOfComments).map( function () {
+    return generateRandomComment();
+  })
+};
+
 
 /**
  * Функцию для создания массива из 25 сгенерированных JS объектов.
@@ -40,33 +57,32 @@ var generateRandomComment = function () {
  * @param {array} comments - список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев определяется на своё усмотрение. Все комментарии генерируются случайным образом.
  * @return {object} - описание фотографии, опубликованной пользователем.
  */
-var getPhotoUsers = function (countPhotoUsers) {
-  var photoUsers = [];
+var NUMBER_OF_LIKES_MIN = 15;
+var NUMBER_OF_LIKES_MAX = 200;
+var NUMBER_OF_PHOTO_USERS = 25;
 
-  for (var i = 1; i <= countPhotoUsers; i++) {
-    photoUsers[i] = {
-      url: 'photos/' + i + '.jpg',
-      likes: generateRandomNumber(15, 200),
-      comments: generateRandomComment()
+var getPhotoUsers = function (countPhotoUsers) {
+  return createArray(countPhotoUsers).map( function (_value, index) {
+    return {
+      url: `photos/${index + 1}.jpg`,//template quotes
+      likes: generateRandomNumber(NUMBER_OF_LIKES_MIN, NUMBER_OF_LIKES_MAX),
+      comments: generateListOfComments()
     };
-  }
-  return photoUsers;
+  });
 };
 
-// На основе данных, созданных в предыдущем пункте и шаблона #picture создайте DOM-элементы, соответствующие фотографиям и заполните их данными из массива:
-// Адрес изображения url подставьте как src изображения
 var template = document.querySelector('#picture');
 var pictures = document.querySelector('.pictures');
+var photoUsers = getPhotoUsers(NUMBER_OF_PHOTO_USERS);
 
-var photoUsers = getPhotoUsers(25);
-
-photoUsers.forEach(function () {
+var fragment = document.createDocumentFragment();
+for (var photo of photoUsers) {
   var photoElement = template.content.cloneNode(true);
 
-  photoElement.querySelector('.picture__img').src = photoUsers.url;
-  photoElement.querySelector('.picture__comments').textContent = photoUsers.comments;
-  photoElement.querySelector('.picture__likes').textContent = photoUsers.likes;
-  pictures.appendChild(photoElement);
-});
+  photoElement.querySelector('.picture__img').src = photo.url;
+  photoElement.querySelector('.picture__comments').textContent = photo.comments.length;
+  photoElement.querySelector('.picture__likes').textContent = photo.likes;
 
-// documentFragment
+  fragment.appendChild(photoElement);
+}
+pictures.appendChild(fragment);
