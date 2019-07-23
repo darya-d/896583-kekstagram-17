@@ -110,22 +110,22 @@ var imgPreview = document.querySelector('.img-upload__preview > img');
 var imgPreviewButtons = document.querySelectorAll('.effects__radio');
 var imgPreviewSize = document.querySelector('.scale__control--value').value;
 
-var effects = {
-  chrome: ['grayscale', 0, 1],
-  sepia: ['sepia', 0, 1],
-  marvin: ['invert', 0, 100 + '%'],
-  phobos: ['blur', 0, 3 + '%'],
-  heat: ['brightness', 1, 3]
-};
+// var effects = {
+//   chrome: ['grayscale', 0, 1],
+//   sepia: ['sepia', 0, 1],
+//   marvin: ['invert', 0, 100 + '%'],
+//   phobos: ['blur', 0, 3 + '%'],
+//   heat: ['brightness', 1, 3]
+// };
 var effectNone = document.querySelector('.effects__preview--none');
 
-var imgEffectPin = document.querySelector('.effect-level__pin');
+// var imgEffectPin = document.querySelector('.effect-level__pin');
 var imgEffectLine = document.querySelector('.img-upload__effect-level');
-var imgEffectValue = document.querySelector('.effect-level__value');
+// var imgEffectValue = document.querySelector('.effect-level__value');
 var imgEffectValueDefault = SCALE_VALUE.MAX;
 
 var commentsArea = document.querySelector('.text__description');
-var hashtagsArea = document.querySelector('.text__hashtags');
+// var hashtagsArea = document.querySelector('.text__hashtags');
 
 // ==== 4.1. Обработка изменения значения поля выбора файла #upload-file. При наступлении события change на этом поле, можно сразу показывать форму редактирования изображения.
 // ==== 4.4. Валидация: если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
@@ -206,9 +206,7 @@ document.addEventListener('click', function (evt) {
     increaseValue();
   } else if (evt.target.classList.contains('scale__control--smaller')) {
     decreaseValue();
-  } else {
-    return imgEffectValueDefault;
-  }
+  } return imgEffectValueDefault;
 });
 
 // Предыдущая попытка
