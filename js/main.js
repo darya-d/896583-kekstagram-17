@@ -108,6 +108,7 @@ var buttonPopupClose = document.querySelector('#upload-cancel');
 // var imgItem = document.querySelectorAll('.effects__item');
 var imgPreview = document.querySelector('.img-upload__preview > img');
 var imgPreviewButtons = document.querySelectorAll('.effects__radio');
+var imgPreviewSizeButtons = document.querySelector('.scale__control');
 var imgPreviewSize = document.querySelector('.scale__control--value').value;
 
 // var effects = {
@@ -122,10 +123,11 @@ var effectNone = document.querySelector('.effects__preview--none');
 // var imgEffectPin = document.querySelector('.effect-level__pin');
 var imgEffectLine = document.querySelector('.img-upload__effect-level');
 // var imgEffectValue = document.querySelector('.effect-level__value');
-var imgEffectValueDefault = SCALE_VALUE.MAX;
+// var imgEffectValueDefault = SCALE_VALUE.MAX;
 
 var commentsArea = document.querySelector('.text__description');
 // var hashtagsArea = document.querySelector('.text__hashtags');
+
 
 // ==== 4.1. Обработка изменения значения поля выбора файла #upload-file. При наступлении события change на этом поле, можно сразу показывать форму редактирования изображения.
 // ==== 4.4. Валидация: если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
@@ -179,20 +181,6 @@ imgPreviewButtons.forEach(function (radioButton) {
 // ==== 4.3. Масштаб
 // 4.3.1. При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value. Значение должно изменяться с шагом в 25. Например, если значение поля установлено в 50%, после нажатия на «+», значение должно стать равным 75%. Максимальное значение — 100%, минимальное — 25%. Значение по умолчанию — 100%;
 // 4.3.2. При изменении значения поля .scale__control--value изображению внутри .img-upload__preview должен добавляться соответствующий стиль CSS, который с помощью трансформации scale задаёт масштаб. Например, если в поле стоит значение 75%, то в стиле изображения должно быть написано transform: scale(0.75).
-
-var decreaseValue = function () {
-  if (imgPreviewSize > SCALE_VALUE.MIN) {
-    imgPreviewSize = imgPreviewSize - SCALE_STEP;
-  }
-};
-
-var increaseValue = function () {
-  if (imgPreviewSize < SCALE_VALUE.MAX) {
-    imgPreviewSize = imgPreviewSize + SCALE_STEP;
-  }
-};
-
-
 // var TRANSFORM_SCALE_MAX = 1;
 // var imgPreviewTransform = imgPreviewTransform.TRANSFORM_SCALE_MAX;
 
@@ -201,14 +189,35 @@ var increaseValue = function () {
 // };
 // //  changeImgScale('scale(1)');
 
-document.addEventListener('click', function (evt) {
-  if (evt.target.classList.contains('scale__control--bigger')) {
-    increaseValue();
-  } else if (evt.target.classList.contains('scale__control--smaller')) {
-    decreaseValue();
-  } return imgEffectValueDefault;
-});
+// var decreaseValue = function () {
+//   if (imgPreviewSize > SCALE_VALUE.MIN) {
+//     imgPreviewSize = imgPreviewSize - SCALE_STEP;
+//   }
+// };
 
+// var increaseValue = function () {
+//   if (imgPreviewSize < SCALE_VALUE.MAX) {
+//     imgPreviewSize = imgPreviewSize + SCALE_STEP;
+//   }
+// };
+
+// document.addEventListener('click', function (evt) {
+//   if (evt.target.classList.contains('scale__control--bigger')) {
+//     increaseValue();
+//   } else if (evt.target.classList.contains('scale__control--smaller')) {
+//     decreaseValue();
+//   } return imgEffectValueDefault;
+// });
+
+var changeSizeOfImgPreview = function (button) {
+  if ((button.target.classList.contains('scale__control--bigger') && imgPreviewSize < SCALE_VALUE.MAX)) {
+    imgPreviewSize += SCALE_STEP;
+  } else if ((button.target.classList.contains('scale__control--smaller') && imgPreviewSize > SCALE_VALUE.MIN)) {
+    imgPreviewSize -= SCALE_STEP;
+  }
+};
+
+imgPreviewSizeButtons.addEventListener('click', changeSizeOfImgPreview);
 // Предыдущая попытка
 // var changeValue = function (increase, decrease) {
 //   var value = parseInt(document.querySelector('.scale__control--value').value, 10);
@@ -224,4 +233,4 @@ document.addEventListener('click', function (evt) {
 
 // var decreaseValue = function () {
 //   changeValue(0, 25);
-// };
+// }
