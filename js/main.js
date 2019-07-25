@@ -107,29 +107,31 @@ var commentsArea = document.querySelector('.text__description');
 // var hashtagsArea = document.querySelector('.text__hashtags');
 
 // Open edit form
-var openUploadFile = function () {
+var onOpenUploadFile = function () {
   imgEditForm.classList.remove('hidden');
   document.addEventListener('keydown', onImgEditFormEscPress);
+  addEffect('effects__preview--none');
+  imgEffectLine.classList.add('hidden');
 };
 
 // Close edit form
-var closeUploadFile = function () {
+var onCloseUploadFile = function () {
   imgEditForm.classList.add('hidden');
   document.removeEventListener('keydown', onImgEditFormEscPress);
 };
 
 // Create a handler for event of closing edit form by using ESC
-var onImgEditFormEscPress = uploadFile.addEventListener('keydown', function (evt) {
+var onImgEditFormEscPress = function (evt) {
   if (evt.keyCode === KEYCODE_ESC && evt.target !== commentsArea) {
-    closeImgEditForm();
+    onCloseUploadFile();
   }
-});
+};
 
 // Create an event of opening edit form by add change
-uploadFile.addEventListener('change', openUploadFile);
+uploadFile.addEventListener('change', onOpenUploadFile);
 
 // Create an event of closing edit form by clicking on the closing button
-closeImgEditForm.addEventListener('click', closeUploadFile);
+closeImgEditForm.addEventListener('click', onCloseUploadFile);
 
 // ==== 4.2. Наложение эффекта на изображение
 // 4.2.1. На изображение может накладываться только один эффект.
@@ -189,7 +191,7 @@ var changeEffect = function (evt) {
 imgEditForm.addEventListener('click', changeEffect);
 
 // ==== 4.3. Масштаб
-// 4.3.1. При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value. Значение должно изменяться с шагом в 25. Например, если значение поля установлено в 50%, после нажатия на «+», значение должно стать равным 75%. Максимальное значение — 100%, минимальное — 25%. Значение по умолчанию — 100%;
+// 4.3.1. При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value. Значение должно изменяться с шагом в 25. Максимальное значение — 100%, минимальное — 25%. Значение по умолчанию — 100%;
 // 4.3.2. При изменении значения поля .scale__control--value изображению внутри .img-upload__preview должен добавляться соответствующий стиль CSS, который с помощью трансформации scale задаёт масштаб. Например, если в поле стоит значение 75%, то в стиле изображения должно быть написано transform: scale(0.75).
 var SCALE_STEP = 25;
 var Scale = {
@@ -200,15 +202,25 @@ var Scale = {
 var imgPreviewSizeButtons = document.querySelector('.scale__control');
 var imgPreviewSize = parseInt(document.querySelector('.scale__control--value').value, 10);
 
-var changeSizeOfImgPreview = function (evt) {
+var onChangeSizeOfImgPreview = function (evt) {
   if ((evt.target.classList.contains('scale__control--bigger') && imgPreviewSize < Scale.VALUE_MAX)) {
-    imgPreviewSize += SCALE_STEP;
+    document.querySelector('.scale__control--value').value = imgPreviewSize + SCALE_STEP + '%';
   } else if ((evt.target.classList.contains('scale__control--smaller') && imgPreviewSize > Scale.VALUE_MIN)) {
-    imgPreviewSize -= SCALE_STEP;
+    document.querySelector('.scale__control--value').value = imgPreviewSize - SCALE_STEP + '%';
   }
 };
 
-imgPreviewSizeButtons.addEventListener('click', changeSizeOfImgPreview);
+// var imgPreviewSize = document.querySelector('.scale__control--value').value;
+
+// var onChangeSizeOfImgPreview = function (evt) {
+//   if ((evt.target.classList.contains('scale__control--bigger') && imgPreviewSize < Scale.VALUE_MAX)) {
+//     imgPreviewSize = parseInt(document.querySelector('.scale__control--value').value, 10) + SCALE_STEP + '%';
+//   } else if ((evt.target.classList.contains('scale__control--smaller') && imgPreviewSize > Scale.VALUE_MIN)) {
+//     imgPreviewSize = parseInt(document.querySelector('.scale__control--value').value, 10) - SCALE_STEP + '%';
+//   }
+// };
+
+imgPreviewSizeButtons.addEventListener('click', onChangeSizeOfImgPreview);
 
 // Предыдущая попытка
 // var changeValue = function (increase, decrease) {
