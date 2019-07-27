@@ -44,7 +44,7 @@
   // Reset the saturation level to the initial value (100%) by switching effects. The slider, CSS-style of the image and value of the field should be updated.
 
   window.imgPreview = document.querySelector('.img-upload__preview > img');
-
+  var filterEffects = document.querySelector('.img-upload__effects');
   var effectLevelLine = document.querySelector('.img-upload__effect-level');
 
   // Add filter effects by changing classes; show the level line of filter effect
@@ -53,6 +53,11 @@
     window.imgPreview.classList.add(className);
     effectLevelLine.classList.remove('hidden');
   };
+
+  filterEffects.addEventListener('click', function () {
+    effectLevelValue.setAttribute('value', 100);
+    getStyleSlider(effectPin.MAX);
+  });
 
   // Add to the picture (which inside .img-upload__preview) the .CSS-class that corresponds to the effect by changing the effect
   // Hide level line of filter effect by choosing the `none` effect
