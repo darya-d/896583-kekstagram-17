@@ -10,12 +10,13 @@
 
   var imgPreviewSizeValueFieldset = document.querySelector('.img-upload__scale');
   var imgPreviewSizeValue = parseInt(document.querySelector('.scale__control--value').value, 10);
+  var imgPreview = window.form.imgPreview;
 
   /**
    * Function which change the scale of the image
    */
   var zoomImg = function () {
-    window.main.imgPreview.style.transform = 'scale(' + imgPreviewSizeValue / 100 + ')';
+    imgPreview.style.transform = 'scale(' + imgPreviewSizeValue / 100 + ')';
   };
 
   /**
