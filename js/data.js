@@ -1,11 +1,13 @@
 'use strict';
-
+// data.js - module of
 (function () {
-  // ==== 3th MODULE - DOM ====
-  // ==== Напишите функцию для создания массива из 25 сгенерированных JS объектов. Каждый объект массива ‐ описание фотографии, опубликованной пользователем.
-  /**
-   * @param {array} comments - комментарии пользователей
-   */
+  var NUMBER_OF_PHOTO_USERS = 25;
+
+  var LikesNumber = {
+    MIN: 15,
+    MAX: 200
+  };
+
   var COMMENTS = [
     'Всё отлично!',
     'В целом всё неплохо. Но не всё.',
@@ -16,7 +18,7 @@
   ];
 
   /**
-   * Функция генерации случайного числа в зависимости от указанного интервала
+   * Функция генерации случайного числа в зависимости от указанного интервала.
    *
    * @param {number} min - минимальное значение числа
    * @param {number} max - максимальное значение числа
@@ -31,19 +33,28 @@
   };
 
   /**
-   * Функция генерации случайного комментария
+   * Функция создания массива.
    *
-   * @return {number} - номер случайного элемента массива
+   * @param {number} length - длина массива.
+   * @return {array} - массив комментариев.
    */
-
   var createArray = function (length) {
     return Array.apply(null, {length: length});
   };
 
+  /**
+   * Функция генерации случайного комментария.
+   *
+   * @return {number} - номер случайного элемента массива.
+   */
   var generateRandomComment = function () {
     return getRandomElement(COMMENTS);
   };
 
+  /**
+   * Функция генерации списка случайных комментариев.
+   * @return {function}
+   */
   var generateListOfComments = function () {
     var countOfComments = generateRandomNumber(1, COMMENTS.length);
     return createArray(countOfComments).map(function () {
@@ -52,33 +63,22 @@
   };
 
   /**
-   * Функция для создания массива из 25 сгенерированных JS объектов.
+   * Функция для создания массива из 25 сгенерированных JS-объектов.
    *
-   * @param {number} countPhotoUsers - количество пользователей
-   * @param {string} url — адрес картинки вида photos/{{i}}.jpg, где {{i}} это число от 1 до 25. Адреса картинок не должны повторяться.
-   * @param {number} likes - количество лайков, поставленных фотографии. Случайное число от 15 до 200.
-   * @param {array} comments - список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев определяется на своё усмотрение. Все комментарии генерируются случайным образом.
+   * @param {*} countPhotoUsers - количество пользователей.
    * @return {object} - описание фотографии, опубликованной пользователем.
    */
-  var NUMBER_OF_PHOTO_USERS = 25;
-
-  var Likes = {
-    NUMBER_MIN: 15,
-    NUMBER_MAX: 200
-  };
-
   var getPhotoUsers = function (countPhotoUsers) {
     return createArray(countPhotoUsers).map(function (_value, index) {
       return {
         url: 'photos/' + (index + 1) + '.jpg',
-        likes: generateRandomNumber(Likes.NUMBER_MIN, Likes.NUMBER_MAX),
+        likes: generateRandomNumber(LikesNumber.MIN, LikesNumber.MAX),
         comments: generateListOfComments()
       };
     });
   };
 
-  // На основе данных, созданных в предыдущем пункте и шаблона #picture создайте DOM-элементы, соответствующие фотографиям и заполните их данными из массива.
-  // Отрисуйте сгенерированные DOM-элементы в блок .pictures. Для вставки элементов используйте DocumentFragment.
+  // DOM-элементы, которые соответствуют фотографиям и заполняются данными из массива.
   var template = document.querySelector('#picture');
   var pictures = document.querySelector('.pictures');
   var photoUsers = getPhotoUsers(NUMBER_OF_PHOTO_USERS);
