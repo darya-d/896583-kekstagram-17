@@ -1,5 +1,5 @@
 'use strict';
-// main.js - module of images uploading and editing
+// form.js - module of images uploading and editing
 (function () {
   var KEYCODE_ESC = 27;
 
@@ -179,7 +179,7 @@
   });
 
   // add object to the global scope
-  window.main = {
+  window.form = {
     imgPreview: imgPreview
   };
 })();

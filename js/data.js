@@ -1,8 +1,6 @@
 'use strict';
 // data.js - module of
 (function () {
-  var NUMBER_OF_PHOTO_USERS = 25;
-
   var LikesNumber = {
     MIN: 15,
     MAX: 200
@@ -78,20 +76,7 @@
     });
   };
 
-  // DOM-элементы, которые соответствуют фотографиям и заполняются данными из массива.
-  var template = document.querySelector('#picture');
-  var pictures = document.querySelector('.pictures');
-  var photoUsers = getPhotoUsers(NUMBER_OF_PHOTO_USERS);
-
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < photoUsers.length; i++) {
-    var photoElement = template.content.cloneNode(true);
-
-    photoElement.querySelector('.picture__img').src = photoUsers[i].url;
-    photoElement.querySelector('.picture__comments').textContent = photoUsers[i].comments.length;
-    photoElement.querySelector('.picture__likes').textContent = photoUsers[i].likes;
-
-    fragment.appendChild(photoElement);
-  }
-  pictures.appendChild(fragment);
+  window.data = {
+    getPhotoUsers: getPhotoUsers
+  };
 })();
