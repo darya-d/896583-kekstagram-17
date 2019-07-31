@@ -1,7 +1,6 @@
 'use strict';
-
+// main.js - module of images uploading and editing
 (function () {
-  // ==== 4th MODULE - EVENTS ====
   var KEYCODE_ESC = 27;
 
   var uploadFile = document.querySelector('#upload-file');
@@ -11,22 +10,26 @@
   var commentsArea = document.querySelector('.text__description');
   // var hashtagsArea = document.querySelector('.text__hashtags');
 
-  // Add validation: if the focus is in the comment input field, pressing Esc doesn't close the image editing form.
-  // Open the edit form and auto add 'none' effect
   var onOpenUploadFile = function () {
     imgEditForm.classList.remove('hidden');
     document.addEventListener('keydown', onImgEditFormEscPress);
-    addEffect('effects__preview--none');
+    changeEffect('effects__preview--none');
     effectLevelLine.classList.add('hidden');
+    document.querySelector('.effects__label').click();// 'none' effect by default
   };
 
-  // Close the edit form
+  /**
+   * Function of closing the edit form (handler)
+   */
   var onCloseUploadFile = function () {
     imgEditForm.classList.add('hidden');
     document.removeEventListener('keydown', onImgEditFormEscPress);
   };
 
-  // Create a handler for event of closing edit form by using ESC
+  /**
+   * Function of closing the edit formby by using ESC (handler)
+   * @param {*} evt
+   */
   var onImgEditFormEscPress = function (evt) {
     if (evt.keyCode === KEYCODE_ESC && evt.target !== commentsArea) {
       onCloseUploadFile();
@@ -39,137 +42,131 @@
   // Create an event of closing edit form by clicking on the closing button
   closeImgEditForm.addEventListener('click', onCloseUploadFile);
 
-  // ==== 4.2. Overlay effect on the image
-  // Intensity of the effect is controlled by moving the pin in the `.effect-level__pin` slider. The effect level is recorded in the `.effect-level__value` field. When the intensity level of the effect changes, the CSS styles of the `.img-upload__preview` element are updated.
-  // Reset the saturation level to the initial value (100%) by switching effects. The slider, CSS-style of the image and value of the field should be updated.
-
-  window.imgPreview = document.querySelector('.img-upload__preview > img');
-  var filterEffects = document.querySelector('.img-upload__effects');
+  var imgPreview = document.querySelector('.img-upload__preview > img');
   var effectLevelLine = document.querySelector('.img-upload__effect-level');
 
-  // Add filter effects by changing classes; show the level line of filter effect
-  var addEffect = function (className) {
-    window.imgPreview.removeAttribute('class');
-    window.imgPreview.classList.add(className);
+  /**
+   * Функция изменения эффектов: добавляет класс, удаляет ненужные свойства, устанавливает значения по умолчанию
+   *
+   * @param {*} className - название добавляемого класса
+   */
+  var changeEffect = function (className) {
     effectLevelLine.classList.remove('hidden');
+    imgPreview.removeAttribute('class');
+    imgPreview.classList.add(className);
+    imgPreview.style.removeProperty('filter');
+    effectLevelDepth.style.width = '100%';
+    effectLevelPin.style.left = '100%';
   };
 
-  filterEffects.addEventListener('click', function () {
-    effectLevelValue.setAttribute('value', 100);
-    getStyleSlider(effectPin.MAX);
-  });
-
-  // Add to the picture (which inside .img-upload__preview) the .CSS-class that corresponds to the effect by changing the effect
-  // Hide level line of filter effect by choosing the `none` effect
-  var changeEffect = function (evt) {
+  /**
+   * Функция добавления классов в соответствии с выбранным эффектом
+   * @param {*} evt
+   */
+  var onChangeEffect = function (evt) {
     switch (true) {
       case evt.target.classList.contains('effects__preview--none'):
-        addEffect('effects__preview--none');
-        effectLevelLine.classList.add('hidden');
+        changeEffect('effects__preview--none');
+        effectLevelLine.classList.add('hidden'); // Hide level line of filter effect by choosing the `none` effect
         break;
       case evt.target.classList.contains('effects__preview--chrome'):
-        addEffect('effects__preview--chrome');
+        changeEffect('effects__preview--chrome');
         break;
       case evt.target.classList.contains('effects__preview--sepia'):
-        addEffect('effects__preview--sepia');
+        changeEffect('effects__preview--sepia');
         break;
       case evt.target.classList.contains('effects__preview--marvin'):
-        addEffect('effects__preview--marvin');
+        changeEffect('effects__preview--marvin');
         break;
       case evt.target.classList.contains('effects__preview--phobos'):
-        addEffect('effects__preview--phobos');
+        changeEffect('effects__preview--phobos');
         break;
       case evt.target.classList.contains('effects__preview--heat'):
-        addEffect('effects__preview--heat');
+        changeEffect('effects__preview--heat');
         break;
     }
   };
 
   // Add 'Click' event, which calls change of filter effects
-  imgEditForm.addEventListener('click', changeEffect);
+  imgEditForm.addEventListener('click', onChangeEffect);
 
   // ==== 5th MODULE - DRAG-AND-DROP ====
   // Add handlers for mousedown, mousemove и mouseup events
-  var filters = {}; // an empty object
-
-  var effectPin = {
+  var EffectPinValue = {
     MAX: 450,
     MIN: 0
   };
 
   var effectLevelFieldset = document.querySelector('.effect-level');
   var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
-  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
   var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
+  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
 
-  var getStyleSlider = function (value) {
-    effectLevelPin.style.left = value + 'px';
-    effectLevelDepth.style.width = value + 'px';
-  };
+  var limits = effectLevelLine.getBoundingClientRect();
 
   // The mousemove and mouseup handlers should be added only when users are calling the mousedown handler.
   effectLevelPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-
     var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+      x: evt.clientX
     };
 
-    // The mousemove handler runs change logic of the pin
+    /**
+     * Function of the mousemove handler which runs the change logic of the pin
+     *
+     * @param {*} moveEvt
+     */
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      // Calculate the new coordinates of the pin based on the change of its position
       var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+        x: startCoords.x - moveEvt.clientX
       };
 
       startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
+        x: moveEvt.clientX
       };
 
-      // Restrict dragging: the slider can only move horizontally. Dragging is limited to the outside of the slider fielset.
-      // Apply new coordinates of the pin through the styles to the element and record it in the effect level field (coordinates of middle position of the pin are recorded in this field).
-      // HTMLElement.offsetLeft - returns the offset of the upper left corner of the current element from the parent HTMLElement.offsetParent node in pixels .
-      var valueEffectPin = effectLevelPin.offsetLeft - shift.x;
+      if (startCoords.x < limits.left) {
+        effectLevelPin.style.left = EffectPinValue.MIN + 'px';
+        effectLevelDepth.style.width = EffectPinValue.MIN + 'px';
+      } else if (startCoords.x > limits.left && startCoords.x < limits.right) {
+        effectLevelPin.style.left = (effectLevelPin.offsetLeft - shift.x) + 'px';
+        effectLevelDepth.style.width = (effectLevelDepth.offsetWidth - shift.x) + 'px';
 
-      // Используем тернарный оператор `?` по схеме `условие ? значение1 : значение2`. Проверяется условие, затем если оно верно – возвращается значение1, если неверно – значение2.
-      valueEffectPin = valueEffectPin < effectPin.MAX ? valueEffectPin : effectPin.MAX;
-      valueEffectPin = valueEffectPin > effectPin.MIN ? valueEffectPin : effectPin.MIN;
+        switch (true) {
+          case document.activeElement.value === 'chrome':
+            effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
+            imgPreview.style.filter = 'grayscale(' + effectLevelValue.value + ')';
+            break;
+          case document.activeElement.value === 'sepia':
+            effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
+            imgPreview.style.filter = 'sepia(' + effectLevelValue.value + ')';
+            break;
+          case document.activeElement.value === 'marvin':
+            effectLevelValue.value = (((effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left)) * 100);
+            imgPreview.style.filter = 'invert(' + effectLevelValue.value + '%' + ')';
+            break;
+          case document.activeElement.value === 'phobos':
+            effectLevelValue.value = (3 * (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left));
+            imgPreview.style.filter = 'blur(' + effectLevelValue.value + 'px' + ')';
+            break;
+          case document.activeElement.value === 'heat':
+            effectLevelValue.value = ((2 * (effectLevelPin.offsetLeft - shift.x) + (limits.right - limits.left)) / (limits.right - limits.left));
+            imgPreview.style.filter = 'brightness(' + effectLevelValue.value + ')';
+            break;
+        }
 
-      var relationScaleToValue = Math.round(100 / effectPin.MAX * valueEffectPin);
-
-      getStyleSlider(valueEffectPin);
-
-      // Set to the element effectLevelValue an attribute according to the scheme `elem.setAttribute (name, value)`
-      effectLevelValue.setAttribute('value', relationScaleToValue);
-
-      // Change the depth of the effect by moving the pin. The value of the CSS filter is recorded in one bounds, and the position of the slider in others bounds. Use the proportion.
-      // from 0 to 100
-      var valuePin = effectLevelValue.value;
-      // from 0 to 1
-      var valueFromZeroToOne = valuePin / 100;
-      // from 0 to 3
-      var valueFromZeroToThree = Math.round(valueFromZeroToOne * 3);
-      // from 1 to 3
-      var valRoundFromOneToThree = valueFromZeroToThree > 0 ? valueFromZeroToThree : 1;
-
-      // Change the values of the image CSS-filter
-      var valueToEffect = {
-        'chrome': 'grayscale(' + valueFromZeroToOne + ')',
-        'sepia': 'sepia(' + valueFromZeroToOne + ')',
-        'marvin': 'invert(' + valuePin + '%)',
-        'phobos': 'blur(' + valueFromZeroToThree + 'px)',
-        'heat': 'brightness(' + valRoundFromOneToThree + ')'
-      };
-
-      // `object.style.filter` - the DOM Style filter Property, which used to add visual effects or filter effects to images.
-      window.imgPreview.style.filter = valueToEffect[filters.filterName];
+      } else if (startCoords.x > limits.right) {
+        effectLevelPin.style.left = EffectPinValue.MAX + 'px';
+        effectLevelDepth.style.width = EffectPinValue.MAX + 'px';
+      }
     };
 
-    // Calculation of pin coordinates and their record in the field are duplicated in the mouseup handler, because our user can click the mouse on the slider, but not move it anywhere.
+    /**
+     * Function of the mouseup handler which duplicate pin coordinates
+     *
+     * @param {*} upEvt
+     */
     var onMoseUp = function (upEvt) {
       upEvt.preventDefault();
 
@@ -181,4 +178,8 @@
     document.addEventListener('mouseup', onMoseUp);
   });
 
+  // add object to the global scope
+  window.main = {
+    imgPreview: imgPreview
+  };
 })();
