@@ -6,13 +6,15 @@
   var uploadFile = document.querySelector('#upload-file');
   var imgEditForm = document.querySelector('.img-upload__overlay');
   var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
+  var imgPreview = document.querySelector('.img-upload__preview > img');
+  var effectLevelLine = document.querySelector('.img-upload__effect-level');
 
   var commentsArea = document.querySelector('.text__description');
-  // var hashtagsArea = document.querySelector('.text__hashtags');
+  var hashtagsArea = document.querySelector('.text__hashtags');
 
   var onOpenUploadFile = function () {
     imgEditForm.classList.remove('hidden');
-    document.addEventListener('keydown', onImgEditFormEscPress);
+    document.addEventListener('keydown', onEditFormEscPress);
     changeEffect('effects__preview--none');
     effectLevelLine.classList.add('hidden');
     document.querySelector('.effects__label').click();// 'none' effect by default
@@ -23,17 +25,9 @@
    */
   var onCloseUploadFile = function () {
     imgEditForm.classList.add('hidden');
-    document.removeEventListener('keydown', onImgEditFormEscPress);
-  };
-
-  /**
-   * Function of closing the edit formby by using ESC (handler)
-   * @param {*} evt
-   */
-  var onImgEditFormEscPress = function (evt) {
-    if (evt.keyCode === KEYCODE_ESC && evt.target !== commentsArea) {
-      onCloseUploadFile();
-    }
+    document.removeEventListener('keydown', onEditFormEscPress);
+    document.removeEventListener('keydown', onEditFormEscPress);
+    document.removeEventListener('click', onOutsideAreaClick);
   };
 
   // Create an event of opening edit form by adding `change` event
@@ -42,8 +36,12 @@
   // Create an event of closing edit form by clicking on the closing button
   closeImgEditForm.addEventListener('click', onCloseUploadFile);
 
-  var imgPreview = document.querySelector('.img-upload__preview > img');
-  var effectLevelLine = document.querySelector('.img-upload__effect-level');
+
+  var clearForm = function () {
+    uploadFile.value = '';
+    hashtagsArea.value = '';
+    commentsArea.value = '';
+  };
 
   /**
    * Функция изменения эффектов: добавляет класс, удаляет ненужные свойства, устанавливает значения по умолчанию
@@ -178,8 +176,140 @@
     document.addEventListener('mouseup', onMoseUp);
   });
 
+
+  // ВЫНЕСТИ в отдельный модуль form-upload.js, отвечающий за отправку данных на сервер
+  var form = document.querySelector('.img-upload__form');
+  var successTemplate = document.querySelector('#success');
+  var errorTemplate = document.querySelector('#error');
+  var messageTemplate = document.querySelector('#messages');
+  var main = document.querySelector('main');
+
+  var createUploadMessage = function () {
+    var message = messageTemplate.content.cloneNode(true);
+    return message;
+  };
+
+  var showUploadMessage = function () {
+    var uploadMessage = createUploadMessage();
+    main.appendChild(uploadMessage);
+  };
+
+  var hideUploadMessage = function () {
+    var currentMessage = main.querySelector('.img-upload__message--loading');
+    main.removeChild(currentMessage);
+  };
+
+  var currentBlock = '';
+  var innerBlock = '';
+
+  var createMessage = function (template) {
+    var message = template.content.cloneNode(true);
+    main.appendChild(message);
+    // Разметку сообщения, которая находится блоке #success внутри шаблона template, нужно разместить в main.
+    if (template === successTemplate) {
+      currentBlock = main.querySelector('.success');
+      innerBlock = main.querySelector('.success__inner');
+      var successButton = currentBlock.querySelector('.success__button');
+      // Сообщение должно исчезать после нажатия на кнопку .success__button, по нажатию на клавишу Esc и по клику на произвольную область экрана.
+      var onSuccessButtonClick = function () {
+        main.removeChild(currentBlock);
+        successButton.removeEventListener('click', onSuccessButtonClick);
+        document.removeEventListener('keydown', onEditFormEscPress);
+        document.removeEventListener('click', onOutsideAreaClick);
+      };
+      successButton.addEventListener('click', onSuccessButtonClick);
+      // Разметку сообщения, которая находится блоке #error внутри шаблона template, нужно разместить в main.
+    } else if (template === errorTemplate) {
+      currentBlock = main.querySelector('.error');
+      innerBlock = main.querySelector('.error__inner');
+      var errorButtons = currentBlock.querySelectorAll('.error__button');
+      errorButtons.forEach(function (errorButton) {
+        var onErrorButtonClick = function () {
+          main.removeChild(currentBlock);
+          errorButton.removeEventListener('click', onErrorButtonClick);
+          document.removeEventListener('keydown', onEditFormEscPress);
+          document.removeEventListener('click', onOutsideAreaClick);
+        };
+        errorButton.addEventListener('click', onErrorButtonClick);
+      });
+    }
+  };
+
+  /**
+   * Function of closing the edit form by using ESC (handler)
+   * @param {*} evt
+   */
+  var onEditFormEscPress = function (evt) {
+    if (evt.keyCode === KEYCODE_ESC && evt.target !== commentsArea) {
+      onCloseUploadFile();
+      main.removeChild(currentBlock);
+    }
+  };
+
+  /**
+   * Function of closing the edit form by clicking on the outside area
+   *
+   * @param {*} evt
+   */
+  var onOutsideAreaClick = function (evt) {
+    if (evt.target !== innerBlock && evt.target === currentBlock) {
+      onCloseUploadFile();
+      main.removeChild(currentBlock);
+    }
+  };
+
+  document.addEventListener('keydown', onEditFormEscPress);
+  document.addEventListener('click', onOutsideAreaClick);
+
+  /**
+   * Function of successful sending form data
+   *
+   * @param {*} response
+   */
+  // При успешной отправке формы, форма редактирования изображения закрывается, все данные, введённые в форму и контрол фильтра, приходят в исходное состояние. Поле загрузки фотографии, стилизованное под букву «О» в логотипе, очищается.
+  // На экран выводится сообщение об успешной загрузке изображения.
+  var onLoadSuccess = function (response) {
+    if (response) {
+      createMessage(successTemplate);
+      imgEditForm.classList.add('hidden');
+      clearForm();
+      hideUploadMessage();
+    }
+  };
+
+  /**
+   * Function of unsuccessful sending form data
+   *
+   * @param {*} response
+   */
+  var onLoadError = function (response) {
+    if (response) {
+      createMessage(errorTemplate);
+      imgEditForm.classList.add('hidden');
+      clearForm();
+      hideUploadMessage();
+    }
+  };
+
+  /**
+   * Function of sending data to the server
+   *
+   * @param {*} evt
+   */
+  var onFormSubmissionSend = function (evt) {
+    evt.preventDefault();
+    showUploadMessage();
+    // var save = function (data, onLoad, onError)
+    window.backend.save(new FormData(form), onLoadSuccess, onLoadError);
+  };
+
+  // Event `submit` on button for sending data to the server
+  form.addEventListener('submit', onFormSubmissionSend);
+
   // add object to the global scope
   window.form = {
-    imgPreview: imgPreview
+    imgPreview: imgPreview,
+    clearForm: clearForm
   };
+
 })();
