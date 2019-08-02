@@ -1,71 +1,68 @@
 'use strict';
-// backend.js - module of server-side interaction
-// Модуль для отрисовки фотографий должен в качестве данных использовать данные, которые загружаются с удалённого сервера через XHR: https://js.dump.academy/kekstagram/data.
-// Обработчик отправки формы должен отменять действие формы по умолчанию и отправлять данные формы посредством XHR на сервер https://js.dump.academy/kekstagram. При успешной загрузке данных на сервер закрывал окно редактирования фотографии и сбрасывал значения формы на те, что были поставлены по умолчанию.
+// backend.js - module of server-side interaction using XHR
+
 (function () {
-  // method of getting information from the server
-  var GET_URL = 'https://js.dump.academy/kekstagram/data';
-  // method of sending information to the server
-  var POST_URL = 'https://js.dump.academy/kekstagram';
+  var GET_URL = 'https://js.dump.academy/kekstagram/data';// address of getting information from the server
+  var POST_URL = 'https://js.dump.academy/kekstagram';// address of sending information to the server
+  var STATUS_SUCCESS = 200;
+  var TIMEOUT = 10000; // 10 seconds
 
   /**
    * Function of getting information from the server
    *
-   * @param {*} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
-   * @param {*} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {Object} onLoad - параметр успешного выполнения запроса
+   * @param {Object} onError - параметр неуспешного выполнения запроса
    */
-  // ! код по загрузке является универсальным, его можно вынести в отдельный модуль load.js
-  // все обработчики указывать до запросов, так как ответ с сервера может придти в любой момент времени
   var load = function (onLoad, onError) {
-    // перед вызовом ставим new для создания нового (!) объекта
-    var xhr = new XMLHttpRequest(); // сокращение от XMLHttpRequest
-    // преобразовываем свойством responseType ответ сервера из текста в тип JSON
-    xhr.responseType = 'json';
-    // обработчик события load  сработает когда сервер вернет ответ
+    var URL = GET_URL;
+    createRequest('GET', URL, onLoad, onError);
+  };
+
+  /**
+   * Function of sending data to the server
+   *
+   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
+   * @param {Object} onLoad - параметр успешного выполнения запроса
+   * @param {Object} onError -  параметр неуспешного выполнения запроса
+   */
+  var save = function (data, onLoad, onError) {
+    var URL = POST_URL;
+    createRequest('POST', URL, data, onLoad, onError);
+  };
+
+  /**
+   * Function of creating request
+   *
+   * @param {String} method - название метода.
+   * @param {String} url - адрес обращения к серверу.
+   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
+   * @param {Object} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
+   * @param {Object} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   */
+  var createRequest = function (method, url, data, onLoad, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json'; // преобразование ответа сервера из текста в тип JSON.
+    // обработчик события load сработает когда сервер вернет ответ.
     xhr.addEventListener('load', function () {
-      // 200 - прошло успешно
-      if (xhr.status === 200) {
+      // status - HTTP-код ответа.
+      // statusText - текстовое описание статуса от сервера.
+      if (xhr.status === STATUS_SUCCESS) {
         onLoad(xhr.response);
       } else {
-        // если адрес, по которому запрашиваются данные, передает ошибку
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        onError('Cтатус ответа: ' + xhr.status + ': ' + xhr.statusText);
       }
     });
     // Обработка возможных ошибок при загрузке
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения'); // альтернативное событие - ошибка (на случай ошибки в JSON)
+      onError('Произошла ошибка соединения'); // ошибка в JSON
     });
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс'); // альтернативное событие - время на возврат ответа сервера на запрос истекло
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс'); // время на возврат ответа сервера на запрос истекло
     });
-    xhr.timeout = 10000; // таймер на 10 секунд
+    xhr.timeout = TIMEOUT; // 10 seconds
 
-    xhr.open('GET', GET_URL);
-    xhr.send();
-  };
-
-  /**
-   * Function of sending information to the server
-   *
-   * @param {*} data - объект, который содержит данные формы, которые будут отправлены на сервер
-   * @param {*} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
-   * @param {*} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
-   */
-  var save = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', function () {
-      // 200 - прошло успешно
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-
-    xhr.open('POST', POST_URL);
-    xhr.send(data);
+    xhr.open(method, url); // задаем параметры запроса
+    xhr.send(data);// отправляем запрос на сервер
   };
 
   // add object to the global scope
