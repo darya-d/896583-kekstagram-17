@@ -44,7 +44,7 @@
   /**
    * Функция изменения эффектов: добавляет класс, удаляет ненужные свойства, устанавливает значения по умолчанию
    *
-   * @param {*} className - название добавляемого класса
+   * @param {String} className - название добавляемого класса
    */
   var changeEffect = function (className) {
     effectLevelLine.classList.remove('hidden');
@@ -57,7 +57,7 @@
 
   /**
    * Функция добавления классов в соответствии с выбранным эффектом
-   * @param {*} evt
+   * @param {Object} evt
    */
   var onChangeEffect = function (evt) {
     switch (true) {
@@ -86,7 +86,6 @@
   // Add 'Click' event, which calls change of filter effects
   imgEditForm.addEventListener('click', onChangeEffect);
 
-  // ==== 5th MODULE - DRAG-AND-DROP ====
   // Add handlers for mousedown, mousemove и mouseup events
   var EffectPinValue = {
     MAX: 450,
@@ -98,8 +97,6 @@
   var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
   var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
 
-  var limits = effectLevelLine.getBoundingClientRect();
-
   // The mousemove and mouseup handlers should be added only when users are calling the mousedown handler.
   effectLevelPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -110,10 +107,13 @@
     /**
      * Function of the mousemove handler which runs the change logic of the pin
      *
-     * @param {*} moveEvt
+     * @param {Object} moveEvt
      */
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
+
+      var limits = effectLevelLine.getBoundingClientRect();
+      
       var shift = {
         x: startCoords.x - moveEvt.clientX
       };
@@ -161,7 +161,7 @@
     /**
      * Function of the mouseup handler which duplicate pin coordinates
      *
-     * @param {*} upEvt
+     * @param {Object} upEvt
      */
     var onMoseUp = function (upEvt) {
       upEvt.preventDefault();
@@ -235,7 +235,8 @@
 
   /**
    * Function of closing the edit form by using ESC (handler)
-   * @param {*} evt
+   *
+   * @param {Object} evt
    */
   var onEditFormEscPress = function (evt) {
     if (evt.keyCode === window.utils.KEY_CODE.ESC && evt.target !== commentsArea) {
@@ -247,7 +248,7 @@
   /**
    * Function of closing the edit form by clicking on the outside area
    *
-   * @param {*} evt
+   * @param {Object} evt
    */
   var onOutsideAreaClick = function (evt) {
     if (evt.target !== innerBlock && evt.target === currentBlock) {
@@ -261,27 +262,23 @@
 
   /**
    * Function of successful sending form data
-   *
-   * @param {*} response
    */
   // При успешной отправке формы, форма редактирования изображения закрывается, все данные, введённые в форму и контрол фильтра, приходят в исходное состояние. Поле загрузки фотографии, стилизованное под букву «О» в логотипе, очищается.
   // На экран выводится сообщение об успешной загрузке изображения.
-  var onLoadSuccess = function (response) {
-    if (response) {
-      createMessage(successTemplate);
-      imgEditForm.classList.add('hidden');
-      clearForm();
-      hideUploadMessage();
-    }
+  var onLoadSuccess = function () {
+    createMessage(successTemplate);
+    imgEditForm.classList.add('hidden');
+    clearForm();
+    hideUploadMessage();
   };
 
   /**
    * Function of unsuccessful sending form data
    *
-   * @param {*} response
+   * @param {Object} errorMessage
    */
-  var onLoadError = function (response) {
-    if (response) {
+  var onLoadError = function (errorMessage) {
+    if (errorMessage) {
       createMessage(errorTemplate);
       imgEditForm.classList.add('hidden');
       clearForm();
@@ -292,7 +289,7 @@
   /**
    * Function of sending data to the server
    *
-   * @param {*} evt
+   * @param {Object} evt
    */
   var onFormSubmissionSend = function (evt) {
     evt.preventDefault();
@@ -307,7 +304,8 @@
   // add object to the global scope
   window.form = {
     imgPreview: imgPreview,
-    clearForm: clearForm
+    clearForm: clearForm,
+    onLoadError: onLoadError
   };
 
 })();
