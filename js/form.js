@@ -1,8 +1,6 @@
 'use strict';
 // form.js - module of images uploading and editing
 (function () {
-  var KEYCODE_ESC = 27;
-
   var uploadFile = document.querySelector('#upload-file');
   var imgEditForm = document.querySelector('.img-upload__overlay');
   var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
@@ -240,7 +238,7 @@
    * @param {*} evt
    */
   var onEditFormEscPress = function (evt) {
-    if (evt.keyCode === KEYCODE_ESC && evt.target !== commentsArea) {
+    if (evt.keyCode === window.utils.KEY_CODE.ESC && evt.target !== commentsArea) {
       onCloseUploadFile();
       main.removeChild(currentBlock);
     }

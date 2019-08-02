@@ -52,7 +52,6 @@
         onError('Cтатус ответа: ' + xhr.status + ': ' + xhr.statusText);
       }
     });
-
     // Обработка возможных ошибок при загрузке
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения'); // ошибка в JSON
