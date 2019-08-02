@@ -1,28 +1,45 @@
 'use strict';
-// miniature.js - module of miniature images drawing on the main screen
+// miniature.js - rendering miniature images on the main screen.
 (function () {
-  var NUMBER_OF_PHOTO_USERS = 25;
-  var photoUsers = window.data.getPhotoUsers(NUMBER_OF_PHOTO_USERS);
   var template = document.querySelector('#picture');
   var pictures = document.querySelector('.pictures');
   var fragment = document.createDocumentFragment();
-  // var GET_URL = window.backend.GET_URL;
+  var GET_URL = window.backend.GET_URL;
 
-  // DOM-элементы соответствуют фотографиям и заполняются данными из массива.
-  for (var i = 0; i < photoUsers.length; i++) {
-    // DOM-элемент миниатюры генерируется на основе шаблонного элемента picture, расположенного в элементе template на странице.
-    var photoElement = template.content.cloneNode(true);
+  // Загрузка изображений от других пользователей производится сразу после открытия страницы с удалённого сервера через XHR: https://js.dump.academy/kekstagram/data.
+  //
+  window.backend.load(GET_URL, function (photoUsers) {
+    for (var i = 0; i < photoUsers.length; i++) { // forEach
+      // DOM-элемент миниатюры генерируется на основе шаблонного элемента picture, расположенного в элементе template на странице.
+      var photoElement = template.content.cloneNode(true);
 
-    photoElement.querySelector('.picture__img').src = photoUsers[i].url;
-    photoElement.querySelector('.picture__comments').textContent = photoUsers[i].comments.length;
-    photoElement.querySelector('.picture__likes').textContent = photoUsers[i].likes;
+      photoElement.querySelector('.picture__img').src = photoUsers[i].url;
+      photoElement.querySelector('.picture__comments').textContent = photoUsers[i].comments.length;
+      photoElement.querySelector('.picture__likes').textContent = photoUsers[i].likes;
 
-    fragment.appendChild(photoElement);
-  }
+      fragment.appendChild(photoElement);
+    }
+    pictures.appendChild(fragment);
+  }, window.form.onLoadError);
 
-  // window.load(GET_URL, function (countPhotoUsers) {
-  //   ???
-  // }
-  pictures.appendChild(fragment);
+  // window.backend.load(GET_URL, function (photoUsers) {
+  //   photoUsers.forEach(function () {
+  //     var photoElement = template.content.cloneNode(true);
+
+  //     photoElement.querySelector('.picture__img').src = photoUsers[i].url;
+  //     photoElement.querySelector('.picture__comments').textContent = photoUsers[i].comments.length;
+  //     photoElement.querySelector('.picture__likes').textContent = photoUsers[i].likes;
+
+  //     fragment.appendChild(photoElement);
+  //   })
+  //   pictures.appendChild(fragment);
+  //   }, window.form.onLoadError);
+
+
+  // add object to the global scope
+  window.miniature = {
+    pictures: pictures
+  };
+
 })();
 

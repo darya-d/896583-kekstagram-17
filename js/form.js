@@ -113,7 +113,7 @@
       moveEvt.preventDefault();
 
       var limits = effectLevelLine.getBoundingClientRect();
-      
+
       var shift = {
         x: startCoords.x - moveEvt.clientX
       };

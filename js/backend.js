@@ -10,20 +10,20 @@
   /**
    * Function of getting information from the server
    *
-   * @param {*} onLoad - параметр успешного выполнения запроса
-   * @param {*} onError - параметр неуспешного выполнения запроса
+   * @param {Object} onLoad - параметр успешного выполнения запроса
+   * @param {Object} onError - параметр неуспешного выполнения запроса
    */
   var load = function (onLoad, onError) {
     var URL = GET_URL;
-    createRequest('POST', URL, onLoad, onError);
+    createRequest('GET', URL, onLoad, onError);
   };
 
   /**
    * Function of sending data to the server
    *
-   * @param {object} data - объект, который содержит данные формы, которые будут отправлены на сервер
-   * @param {*} onLoad - параметр успешного выполнения запроса
-   * @param {*} onError -  параметр неуспешного выполнения запроса
+   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
+   * @param {Object} onLoad - параметр успешного выполнения запроса
+   * @param {Object} onError -  параметр неуспешного выполнения запроса
    */
   var save = function (data, onLoad, onError) {
     var URL = POST_URL;
@@ -33,11 +33,11 @@
   /**
    * Function of creating request
    *
-   * @param {string} method - название метода.
-   * @param {string} url - адрес обращения к серверу.
-   * @param {object} data - объект, который содержит данные формы, которые будут отправлены на сервер
-   * @param {*} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
-   * @param {*} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {String} method - название метода.
+   * @param {String} url - адрес обращения к серверу.
+   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
+   * @param {Object} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
+   * @param {Object} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
    */
   var createRequest = function (method, url, data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
