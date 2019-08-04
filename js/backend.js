@@ -68,7 +68,8 @@
   // add object to the global scope
   window.backend = {
     load: load,
-    save: save
+    save: save,
+    GET_URL: GET_URL
   };
 
 })();
