@@ -27,7 +27,6 @@
 
   // Хэштеги не разделяются пробелами
   // var isNoSpaceBetween = function (array) {
-  //   return array[0] !== undefined && array[array.length - 1].search(/\w/) !== 0 || array[array.length - 1] === '_';
   // };
 
   // максимальная длина одного Хэштега превышает 20 символов, включая решётку
