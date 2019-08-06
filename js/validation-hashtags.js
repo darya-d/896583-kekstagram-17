@@ -6,7 +6,6 @@
     AMOUNT: 5,
     LENGTH: 20,
   };
-
   var hashtagsArea = window.form.hashtagsArea;
 
   // Хэштег не начинается с символа решётки `#`

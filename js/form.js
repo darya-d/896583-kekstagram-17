@@ -8,8 +8,25 @@
   var imgPreview = document.querySelector('.img-upload__preview > img');
   var effectLevelLine = document.querySelector('.img-upload__effect-level');
 
+  var EffectPinValue = {
+    MAX: 450,
+    MIN: 0
+  };
+
+  var effectLevelFieldset = document.querySelector('.effect-level');
+  var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
+  var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
+  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
+
+
   var commentsArea = document.querySelector('.text__description');
   var hashtagsArea = document.querySelector('.text__hashtags');
+
+  var form = document.querySelector('.img-upload__form');
+  var successTemplate = document.querySelector('#success');
+  var errorTemplate = document.querySelector('#error');
+  var messageTemplate = document.querySelector('#messages');
+  var main = document.querySelector('main');
 
   var onOpenUploadFile = function () {
     window.utils.open(imgEditForm);
@@ -24,9 +41,7 @@
   var onCloseUploadFile = function () {
     window.utils.close(imgEditForm);
     uploadFile.value = '';
-    // reset все значения слайдера
     imgPreview.style.filter = '';
-    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onEditFormEscPress);
   };
 
@@ -49,9 +64,7 @@
 
   var onClosePressEsc = function () {
     window.utils.close(imgEditForm);
-    // reset все значения слайдера
     imgPreview.style.filter = '';
-    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onClosePressEsc);
   };
 
@@ -85,7 +98,7 @@
     switch (true) {
       case evt.target.classList.contains('effects__preview--none'):
         changeEffect('effects__preview--none');
-        effectLevelLine.classList.add('hidden'); // Hide level line of filter effect by choosing the `none` effect
+        effectLevelLine.classList.add('hidden');
         break;
       case evt.target.classList.contains('effects__preview--chrome'):
         changeEffect('effects__preview--chrome');
@@ -109,15 +122,6 @@
   imgEditForm.addEventListener('click', onChangeEffect);
 
   // Add handlers for mousedown, mousemove и mouseup events
-  var EffectPinValue = {
-    MAX: 450,
-    MIN: 0
-  };
-
-  var effectLevelFieldset = document.querySelector('.effect-level');
-  var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
-  var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
-  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
 
   // The mousemove and mouseup handlers should be added only when users are calling the mousedown handler.
   effectLevelPin.addEventListener('mousedown', function (evt) {
@@ -197,12 +201,6 @@
   });
 
   // Отправка формы на сервер
-  var form = document.querySelector('.img-upload__form');
-  var successTemplate = document.querySelector('#success');
-  var errorTemplate = document.querySelector('#error');
-  var messageTemplate = document.querySelector('#messages');
-  var main = document.querySelector('main');
-
   var createUploadMessage = function () {
     var message = messageTemplate.content.cloneNode(true);
     return message;
@@ -223,12 +221,10 @@
     main.appendChild(message);
     var currentBlock = '';
     var innerBlock = '';
-    // Разметку сообщения, которая находится блоке #success внутри шаблона template, нужно разместить в main.
     if (template === successTemplate) {
       currentBlock = main.querySelector('.success');
       innerBlock = main.querySelector('.success__inner');
       var successButton = currentBlock.querySelector('.success__button');
-      // Сообщение должно исчезать после нажатия на кнопку .success__button, по нажатию на клавишу Esc и по клику на произвольную область экрана.
       var onSuccessButtonClick = function () {
         main.removeChild(currentBlock);
         successButton.removeEventListener('click', onSuccessButtonClick);
@@ -236,7 +232,6 @@
         document.removeEventListener('click', onOutsideAreaClick);
       };
       successButton.addEventListener('click', onSuccessButtonClick);
-      // Разметку сообщения, которая находится блоке #error внутри шаблона template, нужно разместить в main.
     } else if (template === errorTemplate) {
       currentBlock = main.querySelector('.error');
       innerBlock = main.querySelector('.error__inner');
@@ -299,7 +294,6 @@
   var onFormSubmissionSend = function (evt) {
     evt.preventDefault();
     showUploadMessage();
-    // var save = function (data, onLoad, onError)
     window.backend.save(new FormData(form), onLoadSuccess, onLoadError);
   };
 
