@@ -1,5 +1,6 @@
 'use strict';
-// scale.js - module of image scale managing
+// scale.js - module of image scale managing.
+
 (function () {
   var ScaleValue = {
     DEFAULT: 100,

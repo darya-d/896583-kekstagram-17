@@ -1,5 +1,5 @@
 'use strict';
-// backend.js - module of server-side interaction using XHR
+// backend.js - server-side interaction using XHR
 
 (function () {
   var GET_URL = 'https://js.dump.academy/kekstagram/data';// address of getting information from the server
@@ -35,11 +35,11 @@
    *
    * @param {String} method - название метода.
    * @param {String} url - адрес обращения к серверу.
-   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
    * @param {Object} onLoad - функция обратного вызова, которая срабатывает при успешном выполнении запроса
    * @param {Object} onError - функция обратного вызова, которая срабатывает при неуспешном выполнении запроса
+   * @param {Object} data - объект, который содержит данные формы, которые будут отправлены на сервер
    */
-  var createRequest = function (method, url, data, onLoad, onError) {
+  var createRequest = function (method, url, onLoad, onError, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json'; // преобразование ответа сервера из текста в тип JSON.
     // обработчик события load сработает когда сервер вернет ответ.
@@ -68,7 +68,8 @@
   // add object to the global scope
   window.backend = {
     load: load,
-    save: save
+    save: save,
+    GET_URL: GET_URL
   };
 
 })();
