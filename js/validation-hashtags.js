@@ -1,24 +1,22 @@
 'use strict';
+// validation-hashtags.js - hashtags validation.
+
 (function () {
   var HashtagMax = {
     AMOUNT: 5,
     LENGTH: 20,
   };
 
-  var hashtagsArea = window.form.hashtagsArea; // document.querySelector('.text__hashtags')
+  var hashtagsArea = window.form.hashtagsArea;
 
-  // если фокус находится в поле ввода Хэштега, нажатие на Esc НЕ ДОЛЖНО приводить к закрытию формы редактирования изображения.
-  // hashtagsArea.addEventListener('focus', ?);
-  // hashtagsArea.addEventListener('blur', ?);
-
-  // Хэштег не начинается с символа #
+  // Хэштег не начинается с символа решётки `#`
   var isNotStartWithHash = function (array) {
     return array.some(function (tag) {
       return tag[0] !== '#';
     });
   };
 
-  // хеш-тег состоит только из одной решётки
+  // Хэштег состоит только из одной решётки
   var isOnlyHash = function (array) {
     return array.some(function (tag) {
       return tag[0] === '#' && tag.length === 1;
@@ -26,28 +24,37 @@
   };
 
   // Хэштеги не разделяются пробелами
-  // var isNoSpaceBetween = function (array) {
-  // };
+  var isNoSpaceBetween = function (array) {
+    return array.some(function (tag) {
+      return tag.indexOf('#', 1) > 0; // str.indexOf(searchValue, [fromIndex]), где searchValue - строка, представляющая искомое значение, [fromIndex] - местоположение внутри строки, откуда начинать поиск; может быть любым целым числом
+    });
+  };
 
-  // максимальная длина одного Хэштега превышает 20 символов, включая решётку
+  // Максимальная длина одного хэштега превышает 20 символов, включая решётку
   var isMoreThanMaxLength = function (array) {
     return array.some(function (tag) {
       return tag.length > HashtagMax.LENGTH;
     });
   };
 
-  // один и тот же Хэштег использован дважды
-  // var isSameHash = function (array) {
-  //   //??
-  // };
+  // Один и тот же хэштег использован дважды
+  var isSameHash = function (array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var lastElement = array[i];
+      if (array.indexOf(lastElement) !== i) {
+        return true;
+      }
+    }
+    return false;
+  };
 
+  // Рисуем обводку в случае ошибки
   var drawOutline = function () {
     hashtagsArea.style = 'outline: 2px solid #D30000';
   };
 
-  // Для проверки валидности Хэштегов, вам придётся набор Хэштегов превратить в массив, воспользовавшись методом split. Он разбивает строки на массивы. После этого, вы можете написать цикл, который будет ходить по полученному массиву и проверять каждый из Хэштегов на предмет соответствия ограничениям. Если хотя бы один из тегов не проходит нужных проверок, можно воспользоваться методом setCustomValidity для того, чтобы задать полю правильное сообщение об ошибке.
+  // Превращаем набор Хэштегов в массив методом split, который разбивает строки на массивы. Если хотя бы один из тегов не проходит нужных проверок, можно воспользоваться методом setCustomValidity для того, чтобы задать полю правильное сообщение об ошибке.
   // Теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом;
-  // Сообщения о неправильном формате хэштега задаются с помощью метода setCustomValidity у соответствующего поля.
   var checkHashtagsValidity = function () {
     var tagsArray = hashtagsArea.value.toLowerCase().split(' ');
     hashtagsArea.setCustomValidity('');
@@ -70,22 +77,20 @@
         hashtagsArea.setCustomValidity('Хэштег не может состоять только из одной решетки');
         drawOutline();
         break;
-      // case isNoSpaceBetween(tagsArray):
-      //   hashtagsArea.setCustomValidity('Каждый хэштег должен разделяться пробелом');
-      //   drawOutline();
-      //   break;
+      case isNoSpaceBetween(tagsArray):
+        hashtagsArea.setCustomValidity('Каждый хэштег должен разделяться пробелом');
+        drawOutline();
+        break;
       case isMoreThanMaxLength(tagsArray, HashtagMax.LENGTH):
         hashtagsArea.setCustomValidity('Длина тега не может быть больше ' + HashtagMax.LENGTH + ' символов, включая решётку');
         drawOutline();
         break;
-      // case isSameHash(tagsArray):
-      //   hashtagsArea.setCustomValidity('Нельзя использовать несколько одинаковых Хэштегов');
-      //   drawOutline();
-      //   break;
+      case isSameHash(tagsArray):
+        hashtagsArea.setCustomValidity('Нельзя использовать несколько одинаковых хэштегов');
+        drawOutline();
+        break;
     }
   };
-
-  // Если форма заполнена верно, то должна показываться страница с успешно отправленными данными, если же форма пропустила какие-то некорректные значения, то будет показана страница с допущенными ошибками. В идеале у пользователя не должно быть сценария, при котором он может отправить некорректную форму.
 
   hashtagsArea.addEventListener('change', checkHashtagsValidity);
 

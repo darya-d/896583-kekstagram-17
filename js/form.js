@@ -1,5 +1,6 @@
 'use strict';
-// form.js - module of images uploading and editing
+// form.js - module of images uploading and editing.
+
 (function () {
   var uploadFile = document.querySelector('#upload-file');
   var imgEditForm = document.querySelector('.img-upload__overlay');
@@ -23,17 +24,14 @@
   var onCloseUploadFile = function () {
     window.utils.close(imgEditForm);
     uploadFile.value = '';
-    // reset все значения слайдера и масштаба
+    // reset все значения слайдера
     imgPreview.style.filter = '';
-    imgPreview.style.transform = 'scale(1)';
-    // window.slider.resetRadio();
-    // window.slider.resetConditions();
-    // window.slider.setDefaultConditions();
+    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onEditFormEscPress);
   };
 
   var onEditFormEscPress = function (evt) {
-    if (evt.keyCode === window.utils.KEY_CODE.ESC) {
+    if (evt.keyCode === window.utils.KEY_CODE.ESC && evt.target !== commentsArea && evt.target !== hashtagsArea) {
       onCloseUploadFile();
     }
   };
@@ -51,11 +49,9 @@
 
   var onClosePressEsc = function () {
     window.utils.close(imgEditForm);
-    // reset все значения слайдера и масштаба
-    // window.slider.resetConditions();
-    // window.slider.resetRadio();
+    // reset все значения слайдера
     imgPreview.style.filter = '';
-    imgPreview.style.transform = 'scale(1)';
+    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onClosePressEsc);
   };
 
@@ -200,8 +196,7 @@
     document.addEventListener('mouseup', onMoseUp);
   });
 
-
-  // ВЫНЕСТИ в отдельный модуль form-upload.js, отвечающий за отправку данных на сервер
+  // Отправка формы на сервер
   var form = document.querySelector('.img-upload__form');
   var successTemplate = document.querySelector('#success');
   var errorTemplate = document.querySelector('#error');
@@ -258,7 +253,7 @@
     }
 
     var onEscPress = function (evt) {
-      if (evt.keyCode === window.utils.KEY_CODE.ESC && evt.target !== commentsArea) {
+      if (evt.keyCode === window.utils.KEY_CODE.ESC) {
         onCloseUploadFile();
         main.removeChild(currentBlock);
       }
@@ -275,11 +270,6 @@
     document.addEventListener('click', onOutsideAreaClick);
   };
 
-  /**
-   * Function of successful sending form data
-   */
-  // При успешной отправке формы, форма редактирования изображения закрывается, все данные, введённые в форму и контрол фильтра, приходят в исходное состояние. Поле загрузки фотографии, стилизованное под букву «О» в логотипе, очищается.
-  // На экран выводится сообщение об успешной загрузке изображения.
   var onLoadSuccess = function () {
     createMessage(successTemplate);
     imgEditForm.classList.add('hidden');
