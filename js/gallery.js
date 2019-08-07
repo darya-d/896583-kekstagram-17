@@ -18,20 +18,20 @@
   };
 
   var updateFilter = function (evtChange) {
-    switch (true) {
-      case (evtChange.target.id === 'filter-popular'):
+    switch (evtChange.target.id) {
+      case 'filter-popular':
         clearImg();
         var popularPhotos = window.pictureUsers;
         window.render.addPicture(popularPhotos);
         break;
-      case (evtChange.target.id === 'filter-new'):
+      case 'filter-new':
         clearImg();
         var newPhotos = window.pictureUsers.slice().sort(function () {
           return 0.5 - Math.random();
         }).slice(0, MAX_PHOTOS);
         window.render.addPicture(newPhotos);
         break;
-      case (evtChange.target.id === 'filter-discussed'):
+      case 'filter-discussed':
         clearImg();
         var discussedPhoto = window.pictureUsers.slice().sort(function (a, b) {
           return a.comments.length - b.comments.length;
