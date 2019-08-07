@@ -7,25 +7,24 @@
     MIN: 0
   };
 
-  var uploadFile = document.querySelector('#upload-file');
-  var imgEditForm = document.querySelector('.img-upload__overlay');
+  var imgUploader = document.querySelector('.img-upload');
+  var form = imgUploader.querySelector('.img-upload__form');
+  var uploadFile = imgUploader.querySelector('#upload-file');
+  var imgEditForm = imgUploader.querySelector('.img-upload__overlay');
   var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
-  var imgPreview = document.querySelector('.img-upload__preview > img');
-  var effectLevelLine = document.querySelector('.img-upload__effect-level');
-
-  var effectLevelFieldset = document.querySelector('.effect-level');
+  var imgPreview = imgEditForm.querySelector('.img-upload__preview > img');
+  var effectLevelLine = imgEditForm.querySelector('.img-upload__effect-level');
+  var commentsArea = imgEditForm.querySelector('.text__description');
+  var hashtagsArea = imgEditForm.querySelector('.text__hashtags');
+  var effectLevelFieldset = imgEditForm.querySelector('.effect-level');
   var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
   var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
   var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
 
-  var commentsArea = document.querySelector('.text__description');
-  var hashtagsArea = document.querySelector('.text__hashtags');
-
-  var form = document.querySelector('.img-upload__form');
+  var main = document.querySelector('main');
   var successTemplate = document.querySelector('#success');
   var errorTemplate = document.querySelector('#error');
   var messageTemplate = document.querySelector('#messages');
-  var main = document.querySelector('main');
 
   var onOpenUploadFile = function () {
     window.utils.open(imgEditForm);
@@ -154,24 +153,24 @@
         effectLevelPin.style.left = (effectLevelPin.offsetLeft - shift.x) + 'px';
         effectLevelDepth.style.width = (effectLevelDepth.offsetWidth - shift.x) + 'px';
 
-        switch (true) {
-          case document.activeElement.value === 'chrome':
+        switch (document.activeElement.value) {
+          case 'chrome':
             effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
             imgPreview.style.filter = 'grayscale(' + effectLevelValue.value + ')';
             break;
-          case document.activeElement.value === 'sepia':
+          case 'sepia':
             effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
             imgPreview.style.filter = 'sepia(' + effectLevelValue.value + ')';
             break;
-          case document.activeElement.value === 'marvin':
+          case 'marvin':
             effectLevelValue.value = (((effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left)) * 100);
             imgPreview.style.filter = 'invert(' + effectLevelValue.value + '%' + ')';
             break;
-          case document.activeElement.value === 'phobos':
+          case 'phobos':
             effectLevelValue.value = (3 * (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left));
             imgPreview.style.filter = 'blur(' + effectLevelValue.value + 'px' + ')';
             break;
-          case document.activeElement.value === 'heat':
+          case 'heat':
             effectLevelValue.value = ((2 * (effectLevelPin.offsetLeft - shift.x) + (limits.right - limits.left)) / (limits.right - limits.left));
             imgPreview.style.filter = 'brightness(' + effectLevelValue.value + ')';
             break;
