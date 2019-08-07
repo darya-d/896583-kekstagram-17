@@ -2,17 +2,20 @@
 // big-picture.js - showing photos in full size.
 
 (function () {
-  var pictureBlock = document.querySelector('.pictures');
+  var COMMENT_AMMOUNT = 0;
+  var COMMENT = 5;
+
   var bigPicture = document.querySelector('.big-picture');
-  var pictureClose = document.querySelector('.big-picture__cancel');
-  var pictureCommentsCount = document.querySelector('.social__comment-count');
-  var pictureCommentsLoader = document.querySelector('.social__comments-loader');
-  var bigPictureImg = document.querySelector('.big-picture__img img');
-  var bigPictureLikes = document.querySelector('.likes-count');
-  var bigPictureSocial = document.querySelector('.comments-count');
-  var bigPictureCaption = document.querySelector('.social__caption');
-  var bigPictureComments = document.querySelector('.social__comments');
-  var bigPictureComment = document.querySelector('.social__comment');
+  var bigPictureImg = bigPicture.querySelector('img');
+  var pictureClose = bigPicture.querySelector('.big-picture__cancel');
+  var pictureCommentsCount = bigPicture.querySelector('.social__comment-count');
+  var pictureCommentsLoader = bigPicture.querySelector('.social__comments-loader');
+  var bigPictureLikes = bigPicture.querySelector('.likes-count');
+  var bigPictureSocial = bigPicture.querySelector('.comments-count');
+  var bigPictureCaption = bigPicture.querySelector('.social__caption');
+  var bigPictureComments = bigPicture.querySelector('.social__comments');
+  var bigPictureComment = bigPicture.querySelector('.social__comment');
+  var pictures = document.querySelector('.pictures');
 
   var onClickPicture = function (evt) {
     if (evt.target.className === 'picture__img') {
@@ -20,10 +23,10 @@
       bigPicture.classList.remove('hidden');
       document.addEventListener('keydown', onEscClose);
       pictureCommentsCount.classList.add('visually-hidden');
-      pictureCommentsLoader.classList.add('visually-hidden');
+
       bigPictureImg.src = window.pictureUsers[i].url;
       bigPictureLikes.textContent = window.pictureUsers[i].likes;
-      bigPictureSocial.textContent = window.pictureUsers[i].comments.length;
+      bigPictureSocial.textContent = window.pictureUsers[i].comments.length > COMMENT ? ('5 из ' + window.pictureUsers[i].comments.length + ' комментариев') : (' ');
       bigPictureCaption.textContent = window.pictureUsers[i].description;
 
       var renderComments = function (comments) {
@@ -31,8 +34,10 @@
           bigPictureComments.removeChild(bigPictureComments.firstChild);
         }
         var commentElement = bigPictureComment.cloneNode(true);
+
         commentElement.querySelector('.social__picture').src = comments.avatar;
         commentElement.querySelector('.social__text').textContent = comments.message;
+
         return commentElement;
       };
 
@@ -41,6 +46,28 @@
         fragmentComments.appendChild(renderComments(comment));
       });
       bigPictureComments.appendChild(fragmentComments);
+
+      var loadComments = null;
+      var commentsCollection = Array.from(document.querySelectorAll('.social__comment'));
+      var onCommentsLoaderClick = function () {
+        COMMENT_AMMOUNT = COMMENT_AMMOUNT + COMMENT;
+        loadComments = commentsCollection.length - COMMENT_AMMOUNT;
+        if (loadComments > 0) {
+          pictureCommentsLoader.classList.remove('hidden');
+        } else if (loadComments <= 0) {
+          pictureCommentsLoader.classList.add('hidden');
+        }
+        commentsCollection.forEach(function (it, index) {
+          if (index >= COMMENT_AMMOUNT) {
+            it.style.display = 'none';
+          } else if (index < COMMENT_AMMOUNT) {
+            it.style.display = 'flex';
+          }
+        });
+      };
+
+      onCommentsLoaderClick();
+      pictureCommentsLoader.addEventListener('click', onCommentsLoaderClick);
     }
   };
 
@@ -54,7 +81,7 @@
     bigPicture.classList.add('hidden');
   };
 
-  pictureBlock.addEventListener('click', onClickPicture);
+  pictures.addEventListener('click', onClickPicture);
   pictureClose.addEventListener('click', onClickClose);
 
 })();
