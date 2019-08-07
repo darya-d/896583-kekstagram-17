@@ -200,8 +200,7 @@
 
   // Отправка формы на сервер
   var createUploadMessage = function () {
-    var message = messageTemplate.content.cloneNode(true);
-    return message;
+    return messageTemplate.content.cloneNode(true);
   };
 
   var showUploadMessage = function () {
