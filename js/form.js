@@ -2,22 +2,21 @@
 // form.js - module of images uploading and editing.
 
 (function () {
+  var EffectPinValue = {
+    MAX: 450,
+    MIN: 0
+  };
+
   var uploadFile = document.querySelector('#upload-file');
   var imgEditForm = document.querySelector('.img-upload__overlay');
   var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
   var imgPreview = document.querySelector('.img-upload__preview > img');
   var effectLevelLine = document.querySelector('.img-upload__effect-level');
 
-  var EffectPinValue = {
-    MAX: 450,
-    MIN: 0
-  };
-
   var effectLevelFieldset = document.querySelector('.effect-level');
   var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
   var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
   var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
-
 
   var commentsArea = document.querySelector('.text__description');
   var hashtagsArea = document.querySelector('.text__hashtags');
