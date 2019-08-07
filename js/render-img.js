@@ -40,5 +40,6 @@
 
   window.renderImg = {
     addPicture: addPicture,
+    pictures: pictures
   };
 })();
