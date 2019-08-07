@@ -2,14 +2,29 @@
 // form.js - module of images uploading and editing.
 
 (function () {
-  var uploadFile = document.querySelector('#upload-file');
-  var imgEditForm = document.querySelector('.img-upload__overlay');
-  var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
-  var imgPreview = document.querySelector('.img-upload__preview > img');
-  var effectLevelLine = document.querySelector('.img-upload__effect-level');
+  var EffectPinValue = {
+    MAX: 450,
+    MIN: 0
+  };
 
-  var commentsArea = document.querySelector('.text__description');
-  var hashtagsArea = document.querySelector('.text__hashtags');
+  var imgUploader = document.querySelector('.img-upload');
+  var form = imgUploader.querySelector('.img-upload__form');
+  var uploadFile = imgUploader.querySelector('#upload-file');
+  var imgEditForm = imgUploader.querySelector('.img-upload__overlay');
+  var closeImgEditForm = imgEditForm.querySelector('#upload-cancel');
+  var imgPreview = imgEditForm.querySelector('.img-upload__preview > img');
+  var effectLevelLine = imgEditForm.querySelector('.img-upload__effect-level');
+  var commentsArea = imgEditForm.querySelector('.text__description');
+  var hashtagsArea = imgEditForm.querySelector('.text__hashtags');
+  var effectLevelFieldset = imgEditForm.querySelector('.effect-level');
+  var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
+  var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
+  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
+
+  var main = document.querySelector('main');
+  var successTemplate = document.querySelector('#success');
+  var errorTemplate = document.querySelector('#error');
+  var messageTemplate = document.querySelector('#messages');
 
   var onOpenUploadFile = function () {
     window.utils.open(imgEditForm);
@@ -24,9 +39,7 @@
   var onCloseUploadFile = function () {
     window.utils.close(imgEditForm);
     uploadFile.value = '';
-    // reset все значения слайдера
     imgPreview.style.filter = '';
-    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onEditFormEscPress);
   };
 
@@ -49,9 +62,7 @@
 
   var onClosePressEsc = function () {
     window.utils.close(imgEditForm);
-    // reset все значения слайдера
     imgPreview.style.filter = '';
-    // imgPreview.style.transform = 'scale(1)';
     document.removeEventListener('keydown', onClosePressEsc);
   };
 
@@ -85,7 +96,7 @@
     switch (true) {
       case evt.target.classList.contains('effects__preview--none'):
         changeEffect('effects__preview--none');
-        effectLevelLine.classList.add('hidden'); // Hide level line of filter effect by choosing the `none` effect
+        effectLevelLine.classList.add('hidden');
         break;
       case evt.target.classList.contains('effects__preview--chrome'):
         changeEffect('effects__preview--chrome');
@@ -109,15 +120,6 @@
   imgEditForm.addEventListener('click', onChangeEffect);
 
   // Add handlers for mousedown, mousemove и mouseup events
-  var EffectPinValue = {
-    MAX: 450,
-    MIN: 0
-  };
-
-  var effectLevelFieldset = document.querySelector('.effect-level');
-  var effectLevelPin = effectLevelFieldset.querySelector('.effect-level__pin');
-  var effectLevelDepth = effectLevelFieldset.querySelector('.effect-level__depth');
-  var effectLevelValue = effectLevelFieldset.querySelector('.effect-level__value');
 
   // The mousemove and mouseup handlers should be added only when users are calling the mousedown handler.
   effectLevelPin.addEventListener('mousedown', function (evt) {
@@ -151,24 +153,24 @@
         effectLevelPin.style.left = (effectLevelPin.offsetLeft - shift.x) + 'px';
         effectLevelDepth.style.width = (effectLevelDepth.offsetWidth - shift.x) + 'px';
 
-        switch (true) {
-          case document.activeElement.value === 'chrome':
+        switch (document.activeElement.value) {
+          case 'chrome':
             effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
             imgPreview.style.filter = 'grayscale(' + effectLevelValue.value + ')';
             break;
-          case document.activeElement.value === 'sepia':
+          case 'sepia':
             effectLevelValue.value = (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left);
             imgPreview.style.filter = 'sepia(' + effectLevelValue.value + ')';
             break;
-          case document.activeElement.value === 'marvin':
+          case 'marvin':
             effectLevelValue.value = (((effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left)) * 100);
             imgPreview.style.filter = 'invert(' + effectLevelValue.value + '%' + ')';
             break;
-          case document.activeElement.value === 'phobos':
+          case 'phobos':
             effectLevelValue.value = (3 * (effectLevelPin.offsetLeft - shift.x) / (limits.right - limits.left));
             imgPreview.style.filter = 'blur(' + effectLevelValue.value + 'px' + ')';
             break;
-          case document.activeElement.value === 'heat':
+          case 'heat':
             effectLevelValue.value = ((2 * (effectLevelPin.offsetLeft - shift.x) + (limits.right - limits.left)) / (limits.right - limits.left));
             imgPreview.style.filter = 'brightness(' + effectLevelValue.value + ')';
             break;
@@ -197,15 +199,8 @@
   });
 
   // Отправка формы на сервер
-  var form = document.querySelector('.img-upload__form');
-  var successTemplate = document.querySelector('#success');
-  var errorTemplate = document.querySelector('#error');
-  var messageTemplate = document.querySelector('#messages');
-  var main = document.querySelector('main');
-
   var createUploadMessage = function () {
-    var message = messageTemplate.content.cloneNode(true);
-    return message;
+    return messageTemplate.content.cloneNode(true);
   };
 
   var showUploadMessage = function () {
@@ -223,12 +218,10 @@
     main.appendChild(message);
     var currentBlock = '';
     var innerBlock = '';
-    // Разметку сообщения, которая находится блоке #success внутри шаблона template, нужно разместить в main.
     if (template === successTemplate) {
       currentBlock = main.querySelector('.success');
       innerBlock = main.querySelector('.success__inner');
       var successButton = currentBlock.querySelector('.success__button');
-      // Сообщение должно исчезать после нажатия на кнопку .success__button, по нажатию на клавишу Esc и по клику на произвольную область экрана.
       var onSuccessButtonClick = function () {
         main.removeChild(currentBlock);
         successButton.removeEventListener('click', onSuccessButtonClick);
@@ -236,7 +229,6 @@
         document.removeEventListener('click', onOutsideAreaClick);
       };
       successButton.addEventListener('click', onSuccessButtonClick);
-      // Разметку сообщения, которая находится блоке #error внутри шаблона template, нужно разместить в main.
     } else if (template === errorTemplate) {
       currentBlock = main.querySelector('.error');
       innerBlock = main.querySelector('.error__inner');
@@ -299,7 +291,6 @@
   var onFormSubmissionSend = function (evt) {
     evt.preventDefault();
     showUploadMessage();
-    // var save = function (data, onLoad, onError)
     window.backend.save(new FormData(form), onLoadSuccess, onLoadError);
   };
 

@@ -3,15 +3,14 @@
 
 (function () {
   var MAX_PHOTOS = 10;
+  var DEBOUNCE_INTERVAL = 500;
   var filtersForm = document.querySelector('.img-filters__form');
   var filtersbuttonAll = Array.from(document.querySelectorAll('.img-filters__button'));
   var pictures = document.querySelector('.pictures');
 
   // Блок, с помощью которого производится фильтрация фотографий, скрыт изначально и показывается только после окончания загрузки всех фотографий.
-  // После завершения загрузки изображений с сервера покажите блок .img-filters, убрав у него класс .img-filters--inactive
   var clearImg = function () {
     var picturesCollection = pictures.querySelectorAll('.picture');
-    // метод Array.from принимает итерируемый объект или псевдомассив и делает из него «настоящий» Array. После этого мы уже можем использовать методы массивов.
     var picturesArray = Array.from(picturesCollection);
     picturesArray.forEach(function (it) {
       pictures.removeChild(it);
@@ -19,25 +18,25 @@
   };
 
   var updateFilter = function (evtChange) {
-    switch (true) {
-      case (evtChange.target.id === 'filter-popular'):
+    switch (evtChange.target.id) {
+      case 'filter-popular':
         clearImg();
         var popularPhotos = window.pictureUsers;
-        window.renderImg.addPicture(popularPhotos);
+        window.render.addPicture(popularPhotos);
         break;
-      case (evtChange.target.id === 'filter-new'):
+      case 'filter-new':
         clearImg();
         var newPhotos = window.pictureUsers.slice().sort(function () {
           return 0.5 - Math.random();
         }).slice(0, MAX_PHOTOS);
-        window.renderImg.addPicture(newPhotos);
+        window.render.addPicture(newPhotos);
         break;
-      case (evtChange.target.id === 'filter-discussed'):
+      case 'filter-discussed':
         clearImg();
         var discussedPhoto = window.pictureUsers.slice().sort(function (a, b) {
           return a.comments.length - b.comments.length;
         }).reverse();
-        window.renderImg.addPicture(discussedPhoto);
+        window.render.addPicture(discussedPhoto);
         break;
     }
   };
@@ -53,7 +52,7 @@
     }
     lastTimeout = window.setTimeout(function () {
       updateFilter(evt);
-    }, 500);
+    }, DEBOUNCE_INTERVAL);
   };
 
   filtersForm.addEventListener('click', onClickFilter);

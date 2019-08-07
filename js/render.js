@@ -12,19 +12,19 @@
     * @return {object} - объект фото пользователя с кол-ом комеентариев и лайков
   */
 
-  var renderPhoto = function (photo, index) {
+  var renderPhoto = function (photo) {
     var photoElement = picture.cloneNode(true);
     photoElement.querySelector('.picture__img').src = photo.url;
     photoElement.querySelector('.picture__comments').textContent = photo.comments.length;
     photoElement.querySelector('.picture__likes').textContent = photo.likes;
-    photoElement.querySelector('.picture__img').dataset.id = index;
+    photoElement.querySelector('.picture__img').dataset.id = (photo.url.length === 7 ? photo.url[7] : photo.url.slice(7, 9)) - 1;
     return photoElement;
   };
 
   var addPicture = function (photoUser) {
     var fragment = document.createDocumentFragment();
-    photoUser.forEach(function (photos, i) {
-      fragment.appendChild(renderPhoto(photos, i));
+    photoUser.forEach(function (photos) {
+      fragment.appendChild(renderPhoto(photos));
     });
     pictures.appendChild(fragment);
   };
@@ -38,7 +38,8 @@
 
   window.backend.load(onSuccess, window.form.onLoadError);
 
-  window.renderImg = {
+  window.render = {
     addPicture: addPicture,
+    pictures: pictures
   };
 })();

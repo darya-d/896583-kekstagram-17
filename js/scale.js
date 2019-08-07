@@ -10,7 +10,7 @@
   };
 
   var imgPreviewSizeValueFieldset = document.querySelector('.img-upload__scale');
-  var imgPreviewSizeValue = parseInt(document.querySelector('.scale__control--value').value, 10);
+  var imgPreviewSizeValue = parseInt(imgPreviewSizeValueFieldset.querySelector('.scale__control--value').value, 10);
   var imgPreview = window.form.imgPreview;
 
   /**
@@ -44,5 +44,3 @@
     zoomImg: zoomImg
   };
 })();
-
-

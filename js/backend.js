@@ -14,8 +14,7 @@
    * @param {Object} onError - параметр неуспешного выполнения запроса
    */
   var load = function (onLoad, onError) {
-    var URL = GET_URL;
-    createRequest('GET', URL, onLoad, onError);
+    createRequest('GET', GET_URL, onLoad, onError);
   };
 
   /**
@@ -26,8 +25,7 @@
    * @param {Object} onError -  параметр неуспешного выполнения запроса
    */
   var save = function (data, onLoad, onError) {
-    var URL = POST_URL;
-    createRequest('POST', URL, data, onLoad, onError);
+    createRequest('POST', POST_URL, data, onLoad, onError);
   };
 
   /**
