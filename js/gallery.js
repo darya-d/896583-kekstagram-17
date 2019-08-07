@@ -3,15 +3,15 @@
 
 (function () {
   var MAX_PHOTOS = 10;
+  var DEBOUNCE_INTERVAL = 500;
   var filtersForm = document.querySelector('.img-filters__form');
-  var filtersbuttonAll = Array.from(document.querySelectorAll('.img-filters__button'));
+  var filtersbuttonAll = document.querySelectorAll('.img-filters__button');
   var pictures = document.querySelector('.pictures');
 
   // Блок, с помощью которого производится фильтрация фотографий, скрыт изначально и показывается только после окончания загрузки всех фотографий.
   var clearImg = function () {
     var picturesCollection = pictures.querySelectorAll('.picture');
-    // метод Array.from принимает итерируемый объект или псевдомассив и делает из него «настоящий» Array. После этого мы уже можем использовать методы массивов.
-    var picturesArray = Array.from(picturesCollection);
+    var picturesArray = picturesCollection;
     picturesArray.forEach(function (it) {
       pictures.removeChild(it);
     });
@@ -52,7 +52,7 @@
     }
     lastTimeout = window.setTimeout(function () {
       updateFilter(evt);
-    }, 500);
+    }, DEBOUNCE_INTERVAL);
   };
 
   filtersForm.addEventListener('click', onClickFilter);
