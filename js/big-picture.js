@@ -2,6 +2,7 @@
 // big-picture.js - showing photos in full size.
 
 (function () {
+  var COMMENT = 5;
   var bodyPage = document.querySelector('body');
   var pictureBlock = document.querySelector('.pictures');
   var bigPicture = document.querySelector('.big-picture');
@@ -42,24 +43,23 @@
       });
       bigPictureComments.appendChild(fragmentComments);
 
-      var COMMENT_AMMOUNT = 0;
-      var COMMENT = 5;
+      var commentAmmount = 0;
       var loadComments = null;
       var commentsCollection = Array.from(document.querySelectorAll('.social__comment'));
       var onCommentsLoaderClick = function () {
-        COMMENT_AMMOUNT = COMMENT_AMMOUNT + COMMENT;
-        loadComments = commentsCollection.length - COMMENT_AMMOUNT;
+        commentAmmount = commentAmmount + COMMENT;
+        loadComments = commentsCollection.length - commentAmmount;
         if (loadComments > 0) {
           pictureCommentsLoader.classList.remove('hidden');
-          pictureCommentsCount.textContent = COMMENT_AMMOUNT + ' из ' + commentsCollection.length + ' комментариев';
+          pictureCommentsCount.textContent = commentAmmount + ' из ' + commentsCollection.length + ' комментариев';
         } else if (loadComments <= 0) {
           pictureCommentsLoader.classList.add('hidden');
           pictureCommentsCount.textContent = commentsCollection.length + ' из ' + commentsCollection.length + ' комментариев';
         }
         commentsCollection.forEach(function (it, index) {
-          if (index >= COMMENT_AMMOUNT) {
+          if (index >= commentAmmount) {
             it.style.display = 'none';
-          } else if (index < COMMENT_AMMOUNT) {
+          } else if (index < commentAmmount) {
             it.style.display = 'flex';
           }
         });
