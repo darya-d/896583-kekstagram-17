@@ -10,37 +10,49 @@
   };
 
   var imgPreviewSizeValueFieldset = document.querySelector('.img-upload__scale');
-  var imgPreviewSizeValue = parseInt(imgPreviewSizeValueFieldset.querySelector('.scale__control--value').value, 10);
+  var scaleValue = document.querySelector('.scale__control--value');
   var imgPreview = window.form.imgPreview;
 
   /**
    * Function which change the scale of the image
+   * @param {number} sizeValue
    */
-  var zoomImg = function () {
-    imgPreview.style.transform = 'scale(' + imgPreviewSizeValue / 100 + ')';
+  var zoomImg = function (sizeValue) {
+    imgPreview.style.transform = 'scale(' + sizeValue / 100 + ')';
   };
 
   /**
    * Function which change the value of the .scale__control - value field
    *
-   * @param {*} evt
+   * @param {event} evt
    */
   var onChangeSizeOfImgPreview = function (evt) {
+    var imgPreviewSizeValue = parseInt(scaleValue.value, 10);
     if ((evt.target.classList.contains('scale__control--bigger') && imgPreviewSizeValue < ScaleValue.MAX)) {
-      document.querySelector('.scale__control--value').value = imgPreviewSizeValue + ScaleValue.STEP + '%';
+      scaleValue.value = imgPreviewSizeValue + ScaleValue.STEP + '%';
       imgPreviewSizeValue += ScaleValue.STEP;
-      zoomImg();
+      zoomImg(imgPreviewSizeValue);
     } else if ((evt.target.classList.contains('scale__control--smaller') && imgPreviewSizeValue > ScaleValue.MIN)) {
-      document.querySelector('.scale__control--value').value = imgPreviewSizeValue - ScaleValue.STEP + '%';
+      scaleValue.value = imgPreviewSizeValue - ScaleValue.STEP + '%';
       imgPreviewSizeValue -= ScaleValue.STEP;
-      zoomImg();
+      zoomImg(imgPreviewSizeValue);
     }
+    // if ((evt.target.classList.contains('scale__control--bigger') && imgPreviewSizeValue < ScaleValue.MAX)) {
+    //   document.querySelector('.scale__control--value').value = imgPreviewSizeValue + ScaleValue.STEP + '%';
+    //   imgPreviewSizeValue += ScaleValue.STEP;
+    //   zoomImg();
+    // } else if ((evt.target.classList.contains('scale__control--smaller') && imgPreviewSizeValue > ScaleValue.MIN)) {
+    //   document.querySelector('.scale__control--value').value = imgPreviewSizeValue - ScaleValue.STEP + '%';
+    //   imgPreviewSizeValue -= ScaleValue.STEP;
+    //   zoomImg();
+    // }
   };
 
   imgPreviewSizeValueFieldset.addEventListener('click', onChangeSizeOfImgPreview);
 
   // add object to the global scope
   window.scale = {
-    zoomImg: zoomImg
+    zoomImg: zoomImg,
+    scaleValue: scaleValue
   };
 })();

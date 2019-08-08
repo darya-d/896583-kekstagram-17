@@ -33,6 +33,7 @@
         }
         var commentElement = bigPictureComment.cloneNode(true);
         commentElement.querySelector('.social__picture').src = comments.avatar;
+        commentElement.querySelector('.social__picture').alt = comments.name;
         commentElement.querySelector('.social__text').textContent = comments.message;
         return commentElement;
       };
