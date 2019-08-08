@@ -29,7 +29,7 @@
   var onOpenUploadFile = function () {
     window.utils.open(imgEditForm);
     window.utils.close(effectLevelLine);
-    document.querySelector('.effects__label').click();// 'none' effect by default
+    document.querySelector('.effects__preview--none').click();// 'none' effect by default
     document.addEventListener('keydown', onEditFormEscPress);
   };
 
@@ -86,6 +86,9 @@
     imgPreview.style.removeProperty('filter');
     effectLevelDepth.style.width = '100%';
     effectLevelPin.style.left = '100%';
+    if (className === 'effects__preview--none') {
+      effectLevelLine.classList.add('hidden');
+    }
   };
 
   /**
@@ -93,26 +96,8 @@
    * @param {Object} evt
    */
   var onChangeEffect = function (evt) {
-    switch (true) {
-      case evt.target.classList.contains('effects__preview--none'):
-        changeEffect('effects__preview--none');
-        effectLevelLine.classList.add('hidden');
-        break;
-      case evt.target.classList.contains('effects__preview--chrome'):
-        changeEffect('effects__preview--chrome');
-        break;
-      case evt.target.classList.contains('effects__preview--sepia'):
-        changeEffect('effects__preview--sepia');
-        break;
-      case evt.target.classList.contains('effects__preview--marvin'):
-        changeEffect('effects__preview--marvin');
-        break;
-      case evt.target.classList.contains('effects__preview--phobos'):
-        changeEffect('effects__preview--phobos');
-        break;
-      case evt.target.classList.contains('effects__preview--heat'):
-        changeEffect('effects__preview--heat');
-        break;
+    if (evt.target.classList.contains('effects__preview')) {
+      changeEffect(evt.target.className.slice(18));
     }
   };
 
