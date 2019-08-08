@@ -6,7 +6,6 @@
   var imgUploader = window.form.imgUploader;
   var imgPreview = window.form.imgPreview;
   var fileInput = imgUploader.querySelector('.img-upload__input');
-  var effectsPreview = Array.from(imgUploader.querySelectorAll('.effects__preview'));
 
   fileInput.addEventListener('change', function () {
     var file = fileInput.files[0];
@@ -21,10 +20,6 @@
 
       reader.addEventListener('load', function () {
         imgPreview.src = reader.result;
-
-        for (var i = 0; i < effectsPreview.length; i++) {
-          effectsPreview[i].style.backgroundImage = 'url(' + imgPreview.src + ')';
-        }
       });
 
       reader.readAsDataURL(file);
