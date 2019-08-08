@@ -39,7 +39,8 @@
   var onCloseUploadFile = function () {
     window.utils.close(imgEditForm);
     uploadFile.value = '';
-    imgPreview.style.filter = '';
+    imgPreview.style.transform = '';
+    window.scale.scaleValue = 100;
     document.removeEventListener('keydown', onEditFormEscPress);
   };
 
@@ -284,6 +285,7 @@
 
   // add object to the global scope
   window.form = {
+    imgUploader: imgUploader,
     uploadFile: uploadFile,
     imgPreview: imgPreview,
     hashtagsArea: hashtagsArea,
